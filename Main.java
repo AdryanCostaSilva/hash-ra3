@@ -38,6 +38,26 @@ class List{
 	}
 }
 
+class MultiplicationHash{
+	private Registro list[];
+	public MultiplicationHash(Registro List[]){
+		this.list = list;
+	}
+	public void insert(Random random, Integer list[], int size){
+		int value = random.nextInt(100000000, 1000000000);
+	}
+}
+
+class Cuckoo{
+	private Registro list[];
+	public Cuckoo(Registro List[]){
+		this.list = list;
+	}
+	public void insert(Random random, Integer list[], int size){
+		int value = random.nextInt(100000000, 1000000000);
+	}
+}
+
 public class Main{
 	public static void main(String[]args){
 		Random random = new Random();
