@@ -13,11 +13,11 @@
 import java.util.Random;
 
 class List{
-	private Integer list[];
-	public List(Integer List[]){
+	private Registro list[];
+	public List(Registro List[]){
 		this.list = list;
 	}
-	public void insert(Random random, Integer list[], int size){
+	public void insert(Random random, Registro list[], int size){
 		int value = random.nextInt(100000000, 1000000000);
 		int hash1 = value % size;
 		int hash2 = 1 + (value % (size -1));
@@ -33,7 +33,7 @@ class List{
 				return;
 			}
 		}
-		list[index] = value;
+		list[index] = new Registro(value);
 		System.out.printf("Value %d added into position %d.\n", value, index);
 	}
 }
@@ -43,20 +43,13 @@ public class Main{
 		Random random = new Random();
 		random.setSeed(999);
 		int size = 7;
-		Integer list[] = new Integer[size];
+		Registro list[] = new Registro[size];
 		List listClass = new List(list);
 		for(int i = 0; i < size; i++){
 			listClass.insert(random, list, size);
 		}
 		System.out.printf("List:\n");
 		for(int i = 0; i < size; i++){
-			System.out.printf("%d\n", list[i]);
-		Registro list[] = new Registro[10];
-		for(int i = 0; i < 10; i++){
-			int n = random.nextInt(100000000, 1000000000);
-			list[i] = new Registro(n);
-		}
-		for(int i = 0; i < 10; i++){
 			System.out.printf("%d\n", list[i].getElemento());
 		}
 	}
