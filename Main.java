@@ -12,17 +12,44 @@
 */
 import java.util.Random;
 
+class List{
+	private Integer list[];
+	public List(Integer List[]){
+		this.list = list;
+	}
+	public void insert(Random random, Integer list[], int size){
+		int value = random.nextInt(100000000, 1000000000);
+		int hash1 = value % size;
+		int hash2 = 1 + (value % (size -1));
+		int index = hash1;
+		int i = 0;
+		while(list[index] != null){
+			System.out.printf("Tried to insert %d in position %d, but found a collision.\n", value, index);
+			i++;
+			index = (hash1 + i * hash2) % size;
+
+			if(i >= size){
+				System.out.printf("The table is full.\n");
+				return;
+			}
+		}
+		list[index] = value;
+		System.out.printf("Value %d added into position %d.\n", value, index);
+	}
+}
 
 public class Main{
 	public static void main(String[]args){
 		Random random = new Random();
 		random.setSeed(999);
-		int list[] = new int[10];
-		for(int i = 0; i < 10; i++){
-			int n = random.nextInt(100000000, 1000000000);
-			list[i] = n;
+		int size = 7;
+		Integer list[] = new Integer[size];
+		List listClass = new List(list);
+		for(int i = 0; i < size; i++){
+			listClass.insert(random, list, size);
 		}
-		for(int i = 0; i < 10; i++){
+		System.out.printf("List:\n");
+		for(int i = 0; i < size; i++){
 			System.out.printf("%d\n", list[i]);
 		}
 	}
