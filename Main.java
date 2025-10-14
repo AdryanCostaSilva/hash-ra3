@@ -17,13 +17,13 @@ public class Main{
 	public static void main(String[]args){
 		Random random = new Random();
 		random.setSeed(999);
-		int list[] = new int[10];
+		Registro list[] = new Registro[10];
 		for(int i = 0; i < 10; i++){
 			int n = random.nextInt(100000000, 1000000000);
-			list[i] = n;
+			list[i] = new Registro(n);
 		}
 		for(int i = 0; i < 10; i++){
-			System.out.printf("%d\n", list[i]);
+			System.out.printf("%d\n", list[i].getElemento());
 		}
 	}
 }
