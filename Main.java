@@ -12,9 +12,9 @@
 */
 import java.util.Random;
 
-class List{
+class DoubleHash{
 	private Registro list[];
-	public List(Registro List[]){
+	public DoubleHash(Registro List[]){
 		this.list = list;
 	}
 	public void insert(Random random, Registro list[], int size){
@@ -44,9 +44,9 @@ public class Main{
 		random.setSeed(999);
 		int size = 7;
 		Registro list[] = new Registro[size];
-		List listClass = new List(list);
+		DoubleHash doubleHash = new DoubleHash(list);
 		for(int i = 0; i < size; i++){
-			listClass.insert(random, list, size);
+			doubleHash.insert(random, list, size);
 		}
 		System.out.printf("List:\n");
 		for(int i = 0; i < size; i++){
