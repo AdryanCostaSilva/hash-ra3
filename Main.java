@@ -14,19 +14,25 @@ import java.util.Random;
 
 class DoubleHash{
 	private Registro list[];
+	private Integer value;
+	private int index;
 	public DoubleHash(Registro List[]){
 		this.list = list;
 	}
+	public Integer getValue(){return value;}
+	public void setValue(Integer value){this.value = value;}
+	public int getIndex(){return index;}
+	public void setIndex(int index){this.index = index;}
 	public void insert(Random random, Registro list[], int size){
-		int value = random.nextInt(100000000, 1000000000);
+		setValue(random.nextInt(100000000, 1000000000));
 		int hash1 = value % size;
 		int hash2 = 1 + (value % (size -1));
-		int index = hash1;
+		setIndex(hash1);
 		int i = 0;
 		while(list[index] != null){
 			System.out.printf("Tried to insert %d in position %d, but found a collision.\n", value, index);
 			i++;
-			index = (hash1 + i * hash2) % size;
+			setIndex((hash1 + i * hash2) % size);
 
 			if(i >= size){
 				System.out.printf("The table is full.\n");
@@ -35,6 +41,12 @@ class DoubleHash{
 		}
 		list[index] = new Registro(value);
 		System.out.printf("Value %d added into position %d.\n", value, index);
+	}
+	public void print(Registro list[], int size){
+		System.out.printf("DoubleHash list:\n");
+		for(int i = 0; i < size; i++){
+			System.out.printf("Value: %d\n", list[i].getElemento());
+		}
 	}
 }
 
@@ -68,9 +80,6 @@ public class Main{
 		for(int i = 0; i < size; i++){
 			doubleHash.insert(random, list, size);
 		}
-		System.out.printf("List:\n");
-		for(int i = 0; i < size; i++){
-			System.out.printf("%d\n", list[i].getElemento());
-		}
+		doubleHash.print(list, size);	
 	}
 }
