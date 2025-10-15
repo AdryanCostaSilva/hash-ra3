@@ -25,32 +25,65 @@ class Node {
 
 
 
-
 class DoubleHash{
 	private Registro list[];
-	public DoubleHash(Registro List[]){
+	private Integer value;
+	private int index;
+	private long startTime = 0;
+	private long elapsedTime = 0;
+	private double finalTime;
+	public DoubleHash(Registro list[]){
 		this.list = list;
 	}
+	public Integer getValue(){return value;}
+	public void setValue(Integer value){this.value = value;}
+	public int getIndex(){return index;}
+	public void setIndex(int index){this.index = index;}
+	public long getStartTime(){return startTime;}
+	public void setStartTime(long startTime){this.startTime = startTime;}
+	public long getElapsedTime(){return elapsedTime;}
+	public void setElapsedTime(long elapsedTime){this.elapsedTime = elapsedTime;}
+	public double getFinalTime(){return finalTime;}
+	public void setFinalTime(double finalTime){this.finalTime = finalTime;}
+
 	public void insert(Random random, Registro list[], int size){
-		int value = random.nextInt(100000000, 1000000000);
+		setValue(random.nextInt(100000000, 1000000000));
 		int hash1 = value % size;
 		int hash2 = 1 + (value % (size -1));
-		int index = hash1;
+		setIndex(hash1);
 		int i = 0;
+		setStartTime(System.nanoTime());
 		while(list[index] != null){
 			System.out.printf("Tried to insert %d in position %d, but found a collision.\n", value, index);
 			i++;
-			index = (hash1 + i * hash2) % size;
-
+			setIndex((int)((hash1 + (long)i * hash2) % size));
 			if(i >= size){
 				System.out.printf("The table is full.\n");
 				return;
 			}
 		}
 		list[index] = new Registro(value);
+		setElapsedTime((getElapsedTime() + System.nanoTime()) - getStartTime());
 		System.out.printf("Value %d added into position %d.\n", value, index);
+		setFinalTime(getElapsedTime() /  1_000_000_000.0);
+	}
+	public void print(Registro list[], int size){
+		System.out.printf("DoubleHash list:\n");
+		for(int i = 0; i < size; i++){
+			if(list[i] == null){
+				System.out.printf("Null\n");
+			}
+			else{
+				System.out.printf("Value: %d\n", list[i].getElemento());
+			}
+		}
 	}
 }
+
+
+
+
+
 
 class MultiplicationHash{
 	private Registro list[];
@@ -101,15 +134,25 @@ class QuadraticHash {
         int key = random.nextInt(100000000, 1000000000);
         int hash = key % size;  // funcao hash inicial
         int i = 0; // contador de tentativas
+		int collisionCount = 0;
+
 
  		while (list[(int)((hash + (long)i * i) % size)] != null) {
             System.out.printf("Tried to insert %d in position %d, but found a collision.\n", 
+			
             key, (int)((hash + (long)i * i) % size));
             i++;
+
+			if (list[i] != null) {
+				collisionCount++;
+			}
+
             if (i >= size) {
                 System.out.printf("The table is full. Could not insert %d.\n", key);
                 return;
             }
+
+			
         }
 
         int pos = (hash + i * i) % size;  
@@ -142,65 +185,64 @@ public class Main{
 		random.setSeed(999);
 		int size = 100000;
 		Registro list[] = new Registro[size];
+		DoubleHash doubleHash = new DoubleHash(list);
+		for(int i = 0; i< size; i++){
+			doubleHash.insert(random, list, size);
+		}
+		doubleHash.print(list, size);	
+		System.out.printf("Elapsed time to insert using Double Hash: %f seconds\n", doubleHash.getFinalTime());
 
 
-		// DoubleHash doubleHash = new DoubleHash(list);
-		// System.out.printf("\nDouble hash:\n");
-		// for(int i = 0; i < size; i++){
-		// 	doubleHash.insert(random, list, size);
+
+		// MultiplicationHash multiplicationHash = new MultiplicationHash(list);
+		// System.out.printf("\nMultiplication hash:\n");
+		// random.setSeed(999); // resetamos a seed para gerar os mesmos numeros do comeco
+
+		// long StartTimer = System.nanoTime();
+
+		// for (int i = 0; i < size; i++){
+		// 	multiplicationHash.insert(random);
 		// }
-		// System.out.printf("List:\n");
+
+		// long EndTimer = System.nanoTime();
+		// long duracao = EndTimer - StartTimer;
+		// double millis = duracao / 1_000_000.0;
+		
 		// for(int i = 0; i < size; i++){
-		// 	System.out.printf("%d\n", list[i].getElemento());
+		// 	Node node = multiplicationHash.getTable()[i];
+		// 	System.out.printf("[%d]: ", i);
+		// 	while(node != null){
+		// 		System.out.printf("%d -> ", node.registro.getElemento());
+		// 		node = node.next;
+		// 	}
+		// 	System.out.println("null");
 		// }
+		// System.out.printf("Tempo total de insercao: %d ns (%.3f ms)\n", duracao, millis);
+		System.out.printf("Total collisions (linked list nodes): %d\n", collisionCount);
 
 
 
-		MultiplicationHash multiplicationHash = new MultiplicationHash(list);
-		System.out.printf("\nMultiplication hash:\n");
-		random.setSeed(999); // resetamos a seed para gerar os mesmos numeros do comeco
-
-		long StartTimer = System.nanoTime();
-
-		for (int i = 0; i < size; i++){
-			multiplicationHash.insert(random);
-		}
-
-		long EndTimer = System.nanoTime();
-		long duracao = EndTimer - StartTimer;
-		double millis = duracao / 1_000_000.0;
-		
-		for(int i = 0; i < size; i++){
-			Node node = multiplicationHash.getTable()[i];
-			System.out.printf("[%d]: ", i);
-			while(node != null){
-				System.out.printf("%d -> ", node.registro.getElemento());
-				node = node.next;
-			}
-			System.out.println("null");
-		}
-		System.out.printf("Tempo total de insercao: %d ns (%.3f ms)\n", duracao, millis);
 
 
-		Registro quadraticList[] = new Registro[size];
-		QuadraticHash quadraticHash = new QuadraticHash(quadraticList);
-		System.out.printf("\nQuadratic hash:\n");
+		// 	Registro quadraticList[] = new Registro[size];
+		// 	QuadraticHash quadraticHash = new QuadraticHash(quadraticList);
+		// 	System.out.printf("\nQuadratic hash:\n");
 
-		random.setSeed(999);
+		// 	random.setSeed(999);
 
-		long StartTimerQ = System.nanoTime();
-		for (int i = 0; i < size; i++) {
-			quadraticHash.insert(random);
-		}
-		long EndTimerQ = System.nanoTime();
-		long duracaoQ = EndTimerQ - StartTimerQ;
-		double millisQ = duracaoQ / 1_000_000.0;
-		
-		for (int i = 0; i < size; i++) {
-			Registro reg = quadraticHash.getTable()[i];
-			System.out.printf("[%d]: %s\n", i, reg != null ? reg.getElemento() : "null");
-		}
-		System.out.printf("Tempo total de insercao: %d ns (%.3f ms)\n", duracaoQ, millisQ);
+		// 	long StartTimerQ = System.nanoTime();
+		// 	for (int i = 0; i < size; i++) {
+		// 		quadraticHash.insert(random);
+		// 	}
+		// 	long EndTimerQ = System.nanoTime();
+		// 	long duracaoQ = EndTimerQ - StartTimerQ;
+		// 	double millisQ = duracaoQ / 1_000_000.0;
+			
+		// 	for (int i = 0; i < size; i++) {
+		// 		Registro reg = quadraticHash.getTable()[i];
+		// 		System.out.printf("[%d]: %s\n", i, reg != null ? reg.getElemento() : "null");
+		// 	}
+		// 	System.out.printf("Tempo total de insercao: %d ns (%.3f ms)\n", duracaoQ, millisQ);
 
 	}
 }
