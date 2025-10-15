@@ -57,7 +57,12 @@ class DoubleHash{
 	public void print(Registro list[], int size){
 		System.out.printf("DoubleHash list:\n");
 		for(int i = 0; i < size; i++){
-			System.out.printf("Value: %d\n", list[i].getElemento());
+			if(list[i] == null){
+				System.out.printf("Null\n");
+			}
+			else{
+				System.out.printf("Value: %d\n", list[i].getElemento());
+			}
 		}
 	}
 }
@@ -86,7 +91,7 @@ public class Main{
 	public static void main(String[]args){
 		Random random = new Random();
 		random.setSeed(999);
-		int size = 7;
+		int size = 100;
 		Registro list[] = new Registro[size];
 		DoubleHash doubleHash = new DoubleHash(list);
 		for(int i = 0; i< size; i++){
